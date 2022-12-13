@@ -1,0 +1,8 @@
+{
+    "DB_CONNECTION": "mongodb://localhost:27017/authentication",
+    "OWNER_NAME": "Usman Pasha A",
+    "JWT_SECRET": "test",
+    "ACCESS_TOKEN_VALIDITY": 900,
+    "REFRESH_SECRET": "test",
+    "REFRESH_TOKEN_VALIDITY": "7d"
+}

@@ -1,0 +1,64 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: authentication
+# app and org for use with dashboard.serverless.com
+#app: your-app-name
+#org: your-org-name
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+frameworkVersion: "3"
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-1
+  environment:
+    DB_CONNECTION: ${file(./config/config.${self:custom.currentStage}.json):DB_CONNECTION}
+    OWNER_NAME: ${file(./config/config.${self:custom.currentStage}.json):OWNER_NAME}
+    JWT_SECRET: ${file(./config/config.${self:custom.currentStage}.json):JWT_SECRET}
+    ACCESS_TOKEN_VALIDITY: ${file(./config/config.${self:custom.currentStage}.json):ACCESS_TOKEN_VALIDITY}
+    REFRESH_SECRET: ${file(./config/config.${self:custom.currentStage}.json):REFRESH_SECRET}
+    REFRESH_TOKEN_VALIDITY: ${file(./config/config.${self:custom.currentStage}.json):REFRESH_TOKEN_VALIDITY}
+
+custom:
+  serverless-offline:
+    httpPort: 4000
+  defaultStage: dev
+  currentStage: ${opt:stage, self:custom.defaultStage}
+
+  # you can overwrite defaults here
+  stage: ${self:custom.currentStage}
+
+functions:
+  hello:
+    handler: ./handlers/handler.hello
+    events:
+      - http: "ANY {proxy+}"
+      - http: "ANY / "
+
+  auth:
+    handler: ./handlers/auth.handler
+    events:
+      - http: "ANY /auth/{any+}"
+
+  # user:
+  #   handler: ./handlers/user.handler
+  #   events:
+  #     - http: "ANY /user"
+  #     - http: "ANY /user/{any+}"
